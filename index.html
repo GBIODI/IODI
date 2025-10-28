@@ -72,6 +72,12 @@
             outline: none;
             box-shadow: 0 0 0 2px #06b6d4; /* focus:ring-2 focus:ring-cyan-500 */
         }
+        /* Estilo para listas GES */
+        #ges-realizadas-list, #ges-propuestas-list {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-white p-4 sm:p-6 md:p-8">
@@ -111,10 +117,15 @@
                         <i class="fas fa-folder-plus mr-2"></i>Gestionar Categorías
                     </button>
                 </div>
-                <form id="add-mission-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
-                    <div class="sm:col-span-2 lg:col-span-2">
-                        <label for="mission-name" class="block text-sm font-medium text-slate-400 mb-1">Nombre Y Código</label>
-                        <input type="text" id="mission-name" name="mission-name" required class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Ej: Modelado de Asientos">
+                <!-- Formulario actualizado con Código (req) y Nombre (opc) -->
+                <form id="add-mission-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 items-end">
+                    <div class="lg:col-span-2">
+                        <label for="mission-code" class="block text-sm font-medium text-slate-400 mb-1">Código (Único)</label>
+                        <input type="text" id="mission-code" name="mission-code" required class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Ej: 251002_1217">
+                    </div>
+                     <div class="lg:col-span-2">
+                        <label for="mission-name" class="block text-sm font-medium text-slate-400 mb-1">Nombre (Opcional)</label>
+                        <input type="text" id="mission-name" name="mission-name" class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Ej: Modelado de Asientos">
                     </div>
                     <div>
                         <label for="mission-points" class="block text-sm font-medium text-slate-400 mb-1">Puntos</label>
@@ -124,7 +135,6 @@
                         <label for="mission-week" class="block text-sm font-medium text-slate-400 mb-1">Semana</label>
                         <select id="mission-week" name="mission-week" required class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 h-10">
                             <option value="" disabled selected>Elegir</option>
-                            <!-- Opciones de semana se añaden con JS -->
                         </select>
                     </div>
                     <div>
@@ -134,11 +144,12 @@
                             <option value="automision">Automisión</option>
                         </select>
                     </div>
-                    <div>
+                    <!-- Software (se reduce a 1 col en lg) -->
+                    <div class="lg:col-span-1">
                         <label for="mission-category" class="block text-sm font-medium text-slate-400 mb-1">Software</label>
                         <select id="mission-category" name="mission-category" required class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 h-10"></select>
                     </div>
-                    <button type="submit" class="sm:col-span-2 lg:col-span-6 w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 h-10 mt-4">Añadir Misión</button>
+                    <button type="submit" class="sm:col-span-2 lg:col-span-7 w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 h-10 mt-4">Añadir Misión</button>
                 </form>
             </div>
         </section>
@@ -152,14 +163,13 @@
                 <div id="filter-content" class="mt-4 pt-4 border-t border-slate-700">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
-                            <label for="search-input" class="block text-sm font-medium text-slate-400 mb-2">Buscar por nombre</label>
+                            <label for="search-input" class="block text-sm font-medium text-slate-400 mb-2">Buscar por Código o Nombre</label>
                             <input type="text" id="search-input" placeholder="Buscar misión..." class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
                         </div>
                         <div>
                             <label for="filter-week" class="block text-sm font-medium text-slate-400 mb-2">Filtrar por Semana</label>
                             <select id="filter-week" name="filter-week" class="w-full bg-slate-700 text-white border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 h-10">
                                 <option value="all">Todas las semanas</option>
-                                <!-- Opciones de semana se añaden con JS -->
                             </select>
                         </div>
                         <div>
@@ -182,6 +192,44 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Nueva Tarjeta "Enviar al GES" -->
+        <section id="ges-summary-card" class="mb-8 fade-in">
+            <div class="category-card-bg rounded-xl shadow-lg p-6 border border-cyan-700">
+                <div class="flex justify-between items-center mb-4 border-b border-cyan-600/50 pb-3">
+                    <h2 class="text-2xl font-bold text-cyan-400">Enviar al GES</h2>
+                    <i class="fas fa-paper-plane text-cyan-400 text-xl"></i>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <!-- Botón de Copiar Añadido -->
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="text-lg font-semibold text-white">Realizadas (Misiones y Autom.)</h4>
+                            <button id="copy-realizadas-btn" class="text-xs bg-slate-600 hover:bg-slate-500 text-slate-300 font-medium py-1 px-3 rounded-full transition-all duration-200">
+                                <i class="fas fa-copy mr-1"></i> Copiar
+                            </button>
+                        </div>
+                        <div id="ges-realizadas-list" class="text-slate-300 text-sm font-mono bg-slate-800/50 p-3 rounded-lg min-h-[40px]">
+                            <!-- Contenido generado por JS -->
+                        </div>
+                    </div>
+                    <div>
+                        <!-- Botón de Copiar Añadido -->
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="text-lg font-semibold text-white">Propuestas (Automisiones)</h4>
+                            <button id="copy-propuestas-btn" class="text-xs bg-slate-600 hover:bg-slate-500 text-slate-300 font-medium py-1 px-3 rounded-full transition-all duration-200">
+                                <i class="fas fa-copy mr-1"></i> Copiar
+                            </button>
+                        </div>
+                        <div id="ges-propuestas-list" class="text-slate-300 text-sm font-mono bg-slate-800/50 p-3 rounded-lg min-h-[40px]">
+                            <!-- Contenido generado por JS -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -222,6 +270,7 @@
         let isFilterCollapsed = JSON.parse(localStorage.getItem('isFilterCollapsed')) || false;
         let currentFilter = { text: '', status: 'all', week: 'all', ges: 'all' };
 
+        // --- FUNCIONES DE DATOS ---
         function loadProgress() {
             const savedData = localStorage.getItem('missionProgressData');
             missionData = savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(initialMissionData));
@@ -236,6 +285,7 @@
             localStorage.setItem('isFilterCollapsed', JSON.stringify(isFilterCollapsed));
         }
 
+        // --- FUNCIONES DE RENDERIZADO ---
         function animateScore(start, end) {
             const scoreElement = document.getElementById('total-score');
             if (start === end) {
@@ -289,6 +339,35 @@
             completedAutoMissionsElement.textContent = completedAutoMissions;
         }
         
+        // Nueva función para renderizar la tarjeta "Enviar al GES"
+        function renderGESSummary() {
+            const realizadasListEl = document.getElementById('ges-realizadas-list');
+            const propuestasListEl = document.getElementById('ges-propuestas-list');
+            
+            let realizadas = [];
+            let propuestas = [];
+
+            const allMissions = Object.values(missionData).flat();
+
+            allMissions.forEach(mission => {
+                // Si no está enviada, chequear estados
+                if (!mission.sentToGES) {
+                    // Lista de Realizadas
+                    if ((mission.type === 'mision' && mission.completed) || (mission.type === 'automision' && mission.status?.completed)) {
+                        realizadas.push(`${mission.codigo} [+${mission.points}]`);
+                    }
+                    // Lista de Propuestas (solo automisiones)
+                    if (mission.type === 'automision' && mission.status?.proposed) {
+                        propuestas.push(`${mission.codigo} [+${mission.points}]`);
+                    }
+                }
+            });
+
+            // Actualizar HTML
+            realizadasListEl.innerHTML = realizadas.length > 0 ? realizadas.join('; ') : '<span class="text-slate-500 italic">Nada para enviar</span>';
+            propuestasListEl.innerHTML = propuestas.length > 0 ? propuestas.join('; ') : '<span class="text-slate-500 italic">Nada para enviar</span>';
+        }
+
         function renderMissions() {
             const container = document.getElementById('categories-container');
             container.innerHTML = ''; 
@@ -296,28 +375,26 @@
             Object.keys(missionData).sort().forEach(category => {
                 const isCollapsed = categoryCollapseStates[category] || false;
                 const categoryCard = document.createElement('div');
-                categoryCard.className = 'category-card-bg rounded-xl shadow-lg p-6 border border-slate-700 fade-in flex flex-col'; // Añadido flex flex-col
+                categoryCard.className = 'category-card-bg rounded-xl shadow-lg p-6 border border-slate-700 fade-in flex flex-col';
 
                 const categoryHeader = document.createElement('div');
                 categoryHeader.className = 'flex justify-between items-center mb-4 border-b border-slate-600 pb-3 cursor-pointer';
                 categoryHeader.dataset.category = category;
-
-                const categoryTitle = document.createElement('h2');
-                categoryTitle.className = 'text-2xl font-bold text-cyan-400';
-                categoryTitle.textContent = category;
-                categoryHeader.appendChild(categoryTitle);
-
-                const collapseToggle = document.createElement('button');
-                collapseToggle.className = 'text-slate-400 hover:text-cyan-400 transition-colors duration-200';
-                collapseToggle.innerHTML = isCollapsed ? '<i class="fas fa-chevron-down text-lg"></i>' : '<i class="fas fa-chevron-up text-lg"></i>';
-                categoryHeader.appendChild(collapseToggle);
+                categoryHeader.innerHTML = `
+                    <h2 class="text-2xl font-bold text-cyan-400">${category}</h2>
+                    <button class="text-slate-400 hover:text-cyan-400 transition-colors duration-200">
+                        ${isCollapsed ? '<i class="fas fa-chevron-down text-lg"></i>' : '<i class="fas fa-chevron-up text-lg"></i>'}
+                    </button>
+                `;
                 categoryCard.appendChild(categoryHeader);
 
                 const missionList = document.createElement('ul');
-                missionList.className = `space-y-4 ${isCollapsed ? 'hidden' : ''} max-h-96 overflow-y-auto pr-2`; // Con scroll interno
+                missionList.className = `space-y-4 ${isCollapsed ? 'hidden' : ''} max-h-96 overflow-y-auto pr-2`;
 
                 const filteredMissions = missionData[category].filter(mission => {
-                    const matchesText = mission.name.toLowerCase().includes(currentFilter.text.toLowerCase());
+                    const search_text = currentFilter.text.toLowerCase();
+                    const matchesText = mission.codigo.toLowerCase().includes(search_text) || (mission.nombre && mission.nombre.toLowerCase().includes(search_text));
+                    
                     let matchesStatus = true;
                     if (currentFilter.status === 'completed') matchesStatus = (mission.type === 'mision' && mission.completed) || (mission.type === 'automision' && mission.status?.completed);
                     else if (currentFilter.status === 'pending') matchesStatus = (mission.type === 'mision' && !mission.completed) || (mission.type === 'automision' && !mission.status?.completed);
@@ -332,115 +409,84 @@
                     return matchesText && matchesStatus && matchesWeek && matchesGES;
                 });
 
-                // Ordenar misiones filtradas por semana (como número)
                 filteredMissions.sort((a, b) => parseInt(a.semana, 10) - parseInt(b.semana, 10));
 
                 if (filteredMissions.length === 0) {
-                    const emptyText = document.createElement('p');
-                    emptyText.textContent = 'No hay misiones que coincidan con el filtro.';
-                    emptyText.className = 'text-slate-500 italic py-2';
-                    missionList.appendChild(emptyText);
+                    missionList.innerHTML = '<p class="text-slate-500 italic py-2">No hay misiones que coincidan con el filtro.</p>';
                 } else {
                     filteredMissions.forEach(mission => {
-                        const originalIndex = missionData[category].indexOf(mission);
                         const missionItem = document.createElement('li');
+                        // Usar CÓDIGO como data-id único
+                        missionItem.dataset.codigo = mission.codigo; 
                         missionItem.className = 'group relative p-4 bg-slate-800/50 rounded-lg border border-slate-700 hover:shadow-lg hover:border-cyan-600 transition-all duration-300 ease-in-out transform hover:scale-[1.01]';
-                        missionItem.id = `mission-${category}-${originalIndex}`;
+                        
+                        const missionIconClass = mission.type === 'mision' ? 'fas fa-book text-emerald-400' : 'fas fa-lightbulb text-purple-400';
+                        const missionNameDisplay = mission.nombre ? `<span class="text-slate-400 ml-1">(${mission.nombre})</span>` : '';
 
-                        // --- Botones de Acción (Iconos) ---
-                        const actionButtonsDiv = document.createElement('div');
-                        actionButtonsDiv.className = 'absolute top-3 right-3 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300';
-                        
-                        // Botón de Nota
-                        const noteIcon = document.createElement('button');
-                        noteIcon.innerHTML = '<i class="fas fa-note-sticky"></i>';
-                        noteIcon.className = `transition-colors duration-200 ${mission.note ? 'text-amber-400 hover:text-amber-300' : 'text-slate-500 hover:text-slate-300'}`;
-                        noteIcon.dataset.action = 'toggle-note';
-                        
-                        // Botón de Eliminar
-                        const deleteButton = document.createElement('button');
-                        deleteButton.className = 'text-slate-500 hover:text-red-500 transition-all duration-300';
-                        deleteButton.dataset.action = 'delete';
-                        deleteButton.innerHTML = `<i class="fas fa-trash-alt text-base"></i>`;
-
-                        actionButtonsDiv.append(noteIcon, deleteButton);
-                        
-                        // --- Editor de Notas ---
-                        const noteEditor = document.createElement('div');
-                        noteEditor.className = 'hidden mt-3';
-                        noteEditor.innerHTML = `
-                            <textarea class="w-full bg-slate-900 text-white border-slate-600 rounded-lg p-2 text-sm" rows="3" placeholder="Añade un link o tus pensamientos...">${mission.note || ''}</textarea>
-                            <button data-action="save-note" class="mt-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 px-3 rounded-full">Guardar Nota</button>
-                        `;
-                        
-                        // --- Info de Misión ---
-                        const infoDiv = document.createElement('div');
-                        infoDiv.className = 'pr-14'; // Espacio para los botones de acción
-                        
-                        const missionNameContainer = document.createElement('div');
-                        missionNameContainer.className = 'flex items-center gap-2 mb-1';
-                        const missionIcon = document.createElement('i');
-                        missionIcon.className = `text-lg ${mission.type === 'mision' ? 'fas fa-book text-emerald-400' : 'fas fa-lightbulb text-purple-400'}`;
-                        const missionName = document.createElement('span');
-                        missionName.textContent = mission.name;
-                        missionName.className = 'font-semibold text-white leading-tight block';
-                        missionNameContainer.append(missionIcon, missionName);
-
-                        // --- Contenedor de Puntos y Semana ---
-                        const detailsContainer = document.createElement('div');
-                        detailsContainer.className = 'flex items-center gap-3 mt-1';
-
-                        const missionPoints = document.createElement('span');
-                        missionPoints.textContent = `+${mission.points} pts`;
-                        missionPoints.className = 'text-amber-400 text-sm font-medium';
-                        detailsContainer.appendChild(missionPoints);
-
-                        // Selector de Semana en la tarjeta
-                        const weekSelector = document.createElement('select');
-                        weekSelector.className = 'week-select-card';
-                        weekSelector.dataset.action = 'change-week';
-                        weekSelector.dataset.category = category;
-                        weekSelector.dataset.originalIndex = originalIndex;
-                        
+                        // --- Selector de Semana en la tarjeta ---
+                        let weekOptions = '';
                         for (let i = 1; i <= 15; i++) {
-                            const option = document.createElement('option');
-                            option.value = i;
-                            option.textContent = `Semana ${i}`;
-                            weekSelector.appendChild(option);
+                            weekOptions += `<option value="${i}" ${mission.semana == i ? 'selected' : ''}>Semana ${i}</option>`;
                         }
-                        weekSelector.value = mission.semana; // Establecer valor actual
-                        detailsContainer.appendChild(weekSelector);
-                        
-                        infoDiv.append(missionNameContainer, detailsContainer);
-                        
-                        // --- Botones de Estado ---
-                        const statusContainer = document.createElement('div');
-                        statusContainer.className = 'flex items-center flex-wrap gap-2 mt-3';
-                        if (mission.type === 'automision') {
-                            const proposedButton = document.createElement('button');
-                            proposedButton.dataset.statusType = 'proposed';
-                            proposedButton.textContent = mission.status?.proposed ? 'Propuesta' : 'No Propuesta';
-                            proposedButton.className = `text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.status?.proposed ? 'bg-sky-700 text-sky-100 hover:bg-sky-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}`;
-                            const completedButton = document.createElement('button');
-                            completedButton.dataset.statusType = 'completed';
-                            completedButton.textContent = mission.status?.completed ? 'Realizada' : 'Pendiente';
-                            completedButton.className = `text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.status?.completed ? 'bg-emerald-700 text-emerald-100 hover:bg-emerald-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}`;
-                            statusContainer.append(proposedButton, completedButton);
-                        } else {
-                            const statusButton = document.createElement('button');
-                            statusButton.textContent = mission.completed ? 'Realizado' : 'Pendiente';
-                            statusButton.className = `text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.completed ? 'bg-emerald-700 text-emerald-100 hover:bg-emerald-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}`;
-                            statusContainer.appendChild(statusButton);
-                        }
-                        
-                        // Botón de GES
-                        const gesButton = document.createElement('button');
-                        gesButton.dataset.statusType = 'ges';
-                        gesButton.textContent = mission.sentToGES ? 'Enviado GES' : 'No Enviado';
-                        gesButton.className = `text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.sentToGES ? 'bg-indigo-700 text-indigo-100 hover:bg-indigo-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}`;
-                        statusContainer.appendChild(gesButton);
+                        const weekSelector = `<select class="week-select-card" data-action="change-week">${weekOptions}</select>`;
 
-                        missionItem.append(infoDiv, statusContainer, noteEditor, actionButtonsDiv);
+                        // --- Botones de Estado ---
+                        let statusButtonsHTML = '';
+                        if (mission.type === 'automision') {
+                            statusButtonsHTML = `
+                                <button data-status-type="proposed" class="text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.status?.proposed ? 'bg-sky-700 text-sky-100 hover:bg-sky-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}">
+                                    ${mission.status?.proposed ? 'Propuesta' : 'No Propuesta'}
+                                </button>
+                                <button data-status-type="completed" class="text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.status?.completed ? 'bg-emerald-700 text-emerald-100 hover:bg-emerald-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}">
+                                    ${mission.status?.completed ? 'Realizada' : 'Pendiente'}
+                                </button>
+                            `;
+                        } else {
+                            statusButtonsHTML = `
+                                <button data-status-type="completed" class="text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.completed ? 'bg-emerald-700 text-emerald-100 hover:bg-emerald-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}">
+                                    ${mission.completed ? 'Realizado' : 'Pendiente'}
+                                </button>
+                            `;
+                        }
+                        // Botón de GES
+                        statusButtonsHTML += `
+                            <button data-status-type="ges" class="text-xs font-bold py-1 px-3 rounded-full transition-colors duration-300 ${mission.sentToGES ? 'bg-indigo-700 text-indigo-100 hover:bg-indigo-600' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'}">
+                                ${mission.sentToGES ? 'Enviado GES' : 'No Enviado'}
+                            </button>
+                        `;
+
+                        // --- HTML Interno ---
+                        missionItem.innerHTML = `
+                            <div class="absolute top-3 right-3 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                <button data-action="toggle-note" class="transition-colors duration-200 ${mission.note ? 'text-amber-400 hover:text-amber-300' : 'text-slate-500 hover:text-slate-300'}">
+                                    <i class="fas fa-note-sticky"></i>
+                                </button>
+                                <button data-action="delete" class="text-slate-500 hover:text-red-500 transition-all duration-300">
+                                    <i class="fas fa-trash-alt text-base"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="pr-14">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="${missionIconClass} text-lg"></i>
+                                    <span class="font-semibold text-white leading-tight block">${mission.codigo}</span>
+                                    ${missionNameDisplay}
+                                </div>
+                                <div class="flex items-center gap-3 mt-1">
+                                    <span class="text-amber-400 text-sm font-medium">+${mission.points} pts</span>
+                                    ${weekSelector}
+                                </div>
+                            </div>
+
+                            <div class="flex items-center flex-wrap gap-2 mt-3">
+                                ${statusButtonsHTML}
+                            </div>
+                            
+                            <div class="hidden mt-3" data-note-editor>
+                                <textarea class="w-full bg-slate-900 text-white border-slate-600 rounded-lg p-2 text-sm" rows="3" placeholder="Añade un link o tus pensamientos...">${mission.note || ''}</textarea>
+                                <button data-action="save-note" class="mt-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 px-3 rounded-full">Guardar Nota</button>
+                            </div>
+                        `;
                         missionList.appendChild(missionItem);
                     });
                 }
@@ -448,10 +494,11 @@
                 container.appendChild(categoryCard);
             });
             updateScoresAndStats();
-            populateCategorySelector();
-            populateWeekSelectors();
+            // populateCategorySelector(); // <-- Movido a DOMContentLoaded y lógica de modal
+            renderGESSummary(); // Actualizar tarjeta GES
         }
 
+        // --- FUNCIONES DE POBLADO DE SELECTORES ---
         function populateCategorySelector() {
             const selector = document.getElementById('mission-category');
             const currentVal = selector.value;
@@ -471,7 +518,7 @@
             selectors.forEach((selector, index) => {
                 const currentVal = selector.value;
                 if (index === 0) { // Formulario de añadir
-                    selector.innerHTML = '<option value="" disabled>Elegir</option>';
+                    selector.innerHTML = '<option value="" disabled selected>Elegir</option>';
                 } else { // Filtro
                     selector.innerHTML = '<option value="all">Todas las semanas</option>';
                 }
@@ -498,7 +545,7 @@
             filterHeader.addEventListener('click', () => { isFilterCollapsed = !isFilterCollapsed; saveProgress(); updateFilterView(); });
         }
         
-        // --- CATEGORY MANAGEMENT (LÓGICA RESTAURADA) ---
+        // --- GESTIÓN DE CATEGORÍAS (MODAL) ---
         const modal = document.getElementById('category-modal');
         const manageCategoriesBtn = document.getElementById('manage-categories-btn');
         const closeModalBtn = document.getElementById('close-modal-btn');
@@ -526,7 +573,7 @@
                 missionData[newName] = [];
                 saveProgress();
                 renderCategoryList();
-                populateCategorySelector();
+                populateCategorySelector(); // <-- Actualizar selector
                 renderMissions();
                 input.value = '';
             } else { alert('El nombre de la categoría no es válido o ya existe.'); }
@@ -538,30 +585,70 @@
                 const catToDelete = deleteBtn.dataset.catDelete;
                 if (confirm(`¿Seguro que quieres eliminar la categoría "${catToDelete}" y todas sus misiones?`)) {
                     delete missionData[catToDelete];
-                    delete categoryCollapseStates[catToDelete]; // También borrar estado de colapso
+                    delete categoryCollapseStates[catToDelete];
                     saveProgress();
                     renderCategoryList();
-                    populateCategorySelector();
+                    populateCategorySelector(); // <-- Actualizar selector
                     renderMissions();
                 }
             }
         });
-        // --- FIN DE CATEGORY MANAGEMENT ---
 
+        // --- Nueva Función para Copiar al Portapapeles ---
+        function copyTextToClipboard(text, buttonElement) {
+            if (!text || text.includes('Nada para enviar')) {
+                // Opcional: mostrar mensaje de "nada que copiar"
+                const originalText = buttonElement.innerHTML;
+                buttonElement.innerHTML = 'Nada';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalText;
+                }, 1500);
+                return;
+            }
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            textArea.style.opacity = 0;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            let originalButtonText;
+            try {
+                document.execCommand('copy');
+                // Feedback visual
+                originalButtonText = buttonElement.innerHTML;
+                buttonElement.innerHTML = '<i class="fas fa-check mr-1"></i> Copiado';
+                buttonElement.classList.add('bg-emerald-600');
+                buttonElement.classList.remove('bg-slate-600', 'hover:bg-slate-500');
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalButtonText;
+                    buttonElement.classList.remove('bg-emerald-600');
+                    buttonElement.classList.add('bg-slate-600', 'hover:bg-slate-500');
+                }, 2000);
+            } catch (err) {
+                console.error('Fallback: No se pudo copiar', err);
+                // Opcional: mostrar error
+            }
+            
+            document.body.removeChild(textArea);
+        }
 
-        // --- EVENT HANDLERS ---
+        // --- MANEJADORES DE EVENTOS PRINCIPALES ---
         
         // Listener para CAMBIOS (Select de semana en tarjeta)
         document.getElementById('categories-container').addEventListener('change', function(e) {
             if (e.target.dataset.action === 'change-week') {
                 const selector = e.target;
-                const category = selector.dataset.category;
-                const originalIndex = parseInt(selector.dataset.originalIndex, 10);
-                
-                // Buscar el índice real en missionData
                 const missionItem = selector.closest('li');
-                const missionName = missionItem.querySelector('span.font-semibold').textContent;
-                const realIndex = missionData[category].findIndex(m => m.name === missionName);
+                const codigo = missionItem.dataset.codigo;
+                const category = missionItem.closest('.category-card-bg').querySelector('[data-category]').dataset.category;
+                
+                const realIndex = missionData[category].findIndex(m => m.codigo === codigo);
 
                 if (realIndex !== -1) {
                     const newWeek = parseInt(selector.value, 10);
@@ -576,18 +663,14 @@
 
         // Listener para CLICKS (Botones de estado, notas, eliminar, etc.)
         document.getElementById('categories-container').addEventListener('click', function(e) {
-            // Ignorar clicks en el selector de semana
-            if (e.target.dataset.action === 'change-week') {
-                return;
-            }
+            if (e.target.dataset.action === 'change-week') return; // Ignorar clicks en el select
 
             const clickable = e.target.closest('button, div[data-category]');
             if (!clickable) return;
 
             const missionItem = clickable.closest('li');
-            const category = missionItem?.parentElement.parentElement.querySelector('[data-category]').dataset.category;
             
-            // Handle category collapse
+            // Colapso de Categoría
             if (clickable.dataset.category && !missionItem) {
                 categoryCollapseStates[clickable.dataset.category] = !categoryCollapseStates[clickable.dataset.category];
                 saveProgress(); renderMissions(); return;
@@ -595,9 +678,9 @@
 
             if (!missionItem) return;
 
-            // Encontrar el índice original de forma segura
-            const missionName = missionItem.querySelector('span.font-semibold').textContent;
-            const originalIndex = missionData[category].findIndex(m => m.name === missionName);
+            const codigo = missionItem.dataset.codigo;
+            const category = missionItem.closest('.category-card-bg').querySelector('[data-category]').dataset.category;
+            const originalIndex = missionData[category].findIndex(m => m.codigo === codigo);
             
             if (originalIndex === -1) {
                 console.error("No se pudo encontrar el índice original de la misión.");
@@ -605,44 +688,44 @@
             }
 
             const mission = missionData[category][originalIndex];
+            const action = clickable.dataset.action;
             
-            // Handle Note actions
-            if (clickable.dataset.action === 'toggle-note') {
-                missionItem.querySelector('div.hidden')?.classList.remove('hidden');
+            // Acciones de Notas
+            if (action === 'toggle-note') {
+                missionItem.querySelector('div[data-note-editor]').classList.remove('hidden');
                 clickable.classList.add('hidden'); // Ocultar ícono al abrir
-            } else if (clickable.dataset.action === 'save-note') {
+            } else if (action === 'save-note') {
                 const textarea = missionItem.querySelector('textarea');
                 mission.note = textarea.value;
                 saveProgress();
                 textarea.parentElement.classList.add('hidden');
                 missionItem.querySelector('button[data-action="toggle-note"]').classList.remove('hidden'); // Mostrar ícono
-                renderMissions(); // to update note icon color
-            } else if (clickable.dataset.action === 'delete') {
-                if (confirm('¿Seguro que quieres eliminar esta misión?')) {
+                renderMissions(); // para actualizar color de ícono
+            } 
+            // Eliminar Misión
+            else if (action === 'delete') {
+                if (confirm(`¿Seguro que quieres eliminar la misión "${mission.codigo}"?`)) {
                     missionData[category].splice(originalIndex, 1);
                     saveProgress(); renderMissions();
                 }
-            } else if (clickable.dataset.statusType || clickable.textContent === 'Pendiente' || clickable.textContent === 'Realizado') { // Status change
+            } 
+            // Cambio de Estado
+            else if (clickable.dataset.statusType) {
                 const oldScore = parseInt(document.getElementById('total-score').textContent, 10);
-                let completed = false;
                 const type = clickable.dataset.statusType;
                 let missionJustCompleted = false;
 
                 if (type === 'ges') {
                     mission.sentToGES = !mission.sentToGES;
                 } else if (mission.type === 'automision') {
-                    if (type === 'completed' && !mission.status[type]) missionJustCompleted = true;
+                    if (type === 'completed' && !mission.status[type]) missionJustCompleted = true; // Acaba de completarse
                     mission.status[type] = !mission.status[type];
-                    completed = mission.status.completed;
-                } else if (mission.type === 'mision') {
-                    if (type !== 'proposed') { 
-                        if (!mission.completed) missionJustCompleted = true;
-                        mission.completed = !mission.completed;
-                        completed = mission.completed;
-                    }
+                } else if (mission.type === 'mision' && type === 'completed') {
+                    if (!mission.completed) missionJustCompleted = true; // Acaba de completarse
+                    mission.completed = !mission.completed;
                 }
                 
-                // Lógica de animación unificada
+                // Animación de celebración
                 if (missionJustCompleted) {
                     const pointsCelebration = document.createElement('span');
                     pointsCelebration.className = 'points-celebration text-amber-300 font-bold text-lg';
@@ -655,7 +738,8 @@
 
                 saveProgress();
                 updateScoresAndStats(true, oldScore);
-                setTimeout(renderMissions, 1300); // Retraso mayor para la animación
+                // Retraso para que se vea la animación
+                setTimeout(renderMissions, 1300); 
             }
         });
         
@@ -667,32 +751,44 @@
                 isFilterCollapsed = false;
                 renderMissions();
                 setupFilterCollapse();
+                populateWeekSelectors(); // Asegurarse de repoblar las semanas
             }
         });
         
         document.getElementById('add-mission-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const form = e.target;
-            const name = form.elements['mission-name'].value.trim();
+            const codigo = form.elements['mission-code'].value.trim();
+            const nombre = form.elements['mission-name'].value.trim();
             const points = parseInt(form.elements['mission-points'].value, 10);
             const semana = parseInt(form.elements['mission-week'].value, 10);
             const type = form.elements['mission-type'].value;
             const category = form.elements['mission-category'].value;
 
-            if (name && points > 0 && semana && category && type) {
-                const newMission = { name, points, semana, type, note: '', sentToGES: false };
+            // Validar Código Único
+            const isDuplicate = Object.values(missionData).flat().some(m => m.codigo === codigo);
+            if (isDuplicate) {
+                alert('Error: El "Código" de la misión ya existe. Debe ser único.');
+                return;
+            }
+
+            if (codigo && points > 0 && semana && category && type) {
+                const newMission = { codigo, nombre, points, semana, type, note: '', sentToGES: false };
                 if (type === 'automision') newMission.status = { proposed: false, completed: false };
                 else newMission.completed = false;
                 
                 missionData[category].push(newMission);
                 saveProgress();
                 renderMissions();
+                
+                // Resetear formulario pero mantener categoría
+                const selectedCategory = form.elements['mission-category'].value;
                 form.reset();
-                // Dejar categoría seleccionada
-                form.elements['mission-category'].value = category;
-            } else { alert('Completa todos los campos correctamente, incluyendo la semana.'); }
+                form.elements['mission-category'].value = selectedCategory;
+            } else { alert('Completa todos los campos obligatorios (Código, Puntos, Semana, Tipo, Software).'); }
         });
         
+        // --- FILTROS ---
         document.getElementById('search-input').addEventListener('input', (e) => { currentFilter.text = e.target.value; renderMissions(); });
         
         document.getElementById('filter-week').addEventListener('input', (e) => {
@@ -707,11 +803,10 @@
                 e.target.classList.replace('bg-slate-600', 'bg-cyan-600');
                 e.target.classList.replace('text-slate-300', 'text-white');
                 currentFilter.status = e.target.dataset.filter;
-                renderMDissions();
+                renderMissions();
             });
         });
 
-        // Listener para filtros de GES
         document.querySelectorAll('.ges-filter-button').forEach(button => {
             button.addEventListener('click', (e) => {
                 document.querySelector('.ges-filter-button.bg-cyan-600')?.classList.replace('bg-cyan-600', 'bg-slate-600');
@@ -723,16 +818,29 @@
             });
         });
 
+        // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
             loadProgress();
+            populateWeekSelectors(); // Poblar selectores de semana
+            populateCategorySelector(); // <-- CORRECCIÓN: Poblar selector de software
             renderMissions();
             setupFilterCollapse();
-            // Activar botón "Todas" por defecto
+            
+            // Activar botones de filtro "Todos" por defecto
             document.querySelector('.filter-button[data-filter="all"]')?.classList.replace('bg-slate-600', 'bg-cyan-600');
             document.querySelector('.filter-button[data-filter="all"]')?.classList.replace('text-slate-300', 'text-white');
-            // Activar botón "Todos (GES)" por defecto
             document.querySelector('.ges-filter-button[data-filter-ges="all"]')?.classList.replace('bg-slate-600', 'bg-cyan-600');
             document.querySelector('.ges-filter-button[data-filter-ges="all"]')?.classList.replace('text-slate-300', 'text-white');
+        
+            // --- Listeners para los nuevos botones de copiar ---
+            document.getElementById('copy-realizadas-btn').addEventListener('click', (e) => {
+                const text = document.getElementById('ges-realizadas-list').textContent;
+                copyTextToClipboard(text, e.currentTarget);
+            });
+            document.getElementById('copy-propuestas-btn').addEventListener('click', (e) => {
+                const text = document.getElementById('ges-propuestas-list').textContent;
+                copyTextToClipboard(text, e.currentTarget);
+            });
         });
     </script>
 </body>
